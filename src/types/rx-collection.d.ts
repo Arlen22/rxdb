@@ -54,21 +54,32 @@ export type RxCacheReplacementPolicy = (collection: RxCollection, queryCache: Qu
 export type RxCollectionHookCallback<
     RxDocumentType,
     OrmMethods,
+    StaticMethods,
     Reactivity
 > = (
+    this: RxCollection<RxDocumentType, OrmMethods, StaticMethods, {}, Reactivity>,
     data: RxDocumentType,
     instance: RxDocument<RxDocumentType, OrmMethods, Reactivity>
 ) => void | Promise<void> | any;
-export type RxCollectionHookNoInstance<RxDocumentType> = (data: RxDocumentType) => void | Promise<void> | any;
-export type RxCollectionHookCallbackNonAsync<RxDocumentType, OrmMethods, Reactivity> = (
+
+export type RxCollectionHookNoInstance<RxDocumentType, StaticMethods> = (
+    this: RxCollection<RxDocumentType, StaticMethods>,
+    data: RxDocumentType
+) => void | Promise<void> | any;
+
+export type RxCollectionHookCallbackNonAsync<RxDocumentType, OrmMethods, StaticMethods, Reactivity> = (
+    this: RxCollection<RxDocumentType, OrmMethods, StaticMethods>,
     data: RxDocumentType,
     instance: RxDocument<RxDocumentType, OrmMethods, Reactivity>
 ) => void | any;
+
 export type RxCollectionHookNoInstanceCallback<
     RxDocumentType,
     OrmMethods,
+    StaticMethods,
     Reactivity
 > = (
+    this: RxCollection<RxDocumentType, OrmMethods, StaticMethods>,
     data: RxDocumentType,
     instance: RxCollection<RxDocumentType, OrmMethods, Reactivity>
 ) => Promise<void> | void | any;
@@ -81,18 +92,18 @@ export type RxCollection<
     Reactivity = unknown
 > = StaticMethods &
     RxCollectionBase<InstanceCreationOptions, RxDocumentType, OrmMethods, StaticMethods, Reactivity> &
-    RxCollectionGenerated<RxDocumentType, OrmMethods, Reactivity>;
+    RxCollectionGenerated<RxDocumentType, OrmMethods, StaticMethods, Reactivity>;
 
-export interface RxCollectionGenerated<RxDocumentType = any, OrmMethods = {}, Reactivity = unknown> extends RxLocalDocumentMutation<RxCollection<RxDocumentType, OrmMethods, any, any, Reactivity>> {
+export interface RxCollectionGenerated<RxDocumentType = any, OrmMethods = {}, StaticMethods = {}, Reactivity = unknown> extends RxLocalDocumentMutation<RxCollection<RxDocumentType, OrmMethods, any, any, Reactivity>> {
 
     // HOOKS
-    preInsert(fun: RxCollectionHookNoInstanceCallback<RxDocumentType, OrmMethods, Reactivity>, parallel: boolean): void;
-    preSave(fun: RxCollectionHookCallback<RxDocumentType, OrmMethods, Reactivity>, parallel: boolean): void;
-    preRemove(fun: RxCollectionHookCallback<RxDocumentType, OrmMethods, Reactivity>, parallel: boolean): void;
-    postInsert(fun: RxCollectionHookCallback<RxDocumentType, OrmMethods, Reactivity>, parallel: boolean): void;
-    postSave(fun: RxCollectionHookCallback<RxDocumentType, OrmMethods, Reactivity>, parallel: boolean): void;
-    postRemove(fun: RxCollectionHookCallback<RxDocumentType, OrmMethods, Reactivity>, parallel: boolean): void;
-    postCreate(fun: RxCollectionHookCallbackNonAsync<RxDocumentType, OrmMethods, Reactivity>): void;
+    preInsert(fun: RxCollectionHookNoInstanceCallback<RxDocumentType, OrmMethods, StaticMethods, Reactivity>, parallel: boolean): void;
+    preSave(fun: RxCollectionHookCallback<RxDocumentType, OrmMethods, StaticMethods, Reactivity>, parallel: boolean): void;
+    preRemove(fun: RxCollectionHookCallback<RxDocumentType, OrmMethods, StaticMethods, Reactivity>, parallel: boolean): void;
+    postInsert(fun: RxCollectionHookCallback<RxDocumentType, OrmMethods, StaticMethods, Reactivity>, parallel: boolean): void;
+    postSave(fun: RxCollectionHookCallback<RxDocumentType, OrmMethods, StaticMethods, Reactivity>, parallel: boolean): void;
+    postRemove(fun: RxCollectionHookCallback<RxDocumentType, OrmMethods, StaticMethods, Reactivity>, parallel: boolean): void;
+    postCreate(fun: RxCollectionHookCallbackNonAsync<RxDocumentType, OrmMethods, StaticMethods, Reactivity>): void;
 
     // only inMemory-collections
     awaitPersistence(): Promise<void>;
